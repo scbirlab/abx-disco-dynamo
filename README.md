@@ -2,7 +2,7 @@
 title: Dynamics of antibiotic discovery and resistance
 emoji: 💊
 colorFrom: yellow
-colorTo: orange
+colorTo: purple
 sdk: gradio
 app_file: app.py
 pinned: false
