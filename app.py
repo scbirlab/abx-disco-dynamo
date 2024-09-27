@@ -20,6 +20,7 @@ DATA_PATH = f'{os.getcwd()}/stennett2022-table1.xlsx'
 CLASS_COL = 'class'
 YEAR_COL = 'year'
 FIG_PANEL_SIZE = 3.5
+INIT_PARAMS = (38.534, 1.743, 27.68, 12.1)  # To speed up fitting on Spaces
 
 NUMBER_DISCOVERED = "Discovered"
 NUMBER_WO_R = "Without resistance"
@@ -106,7 +107,7 @@ def dobj_fun(
 
 def fit_to_data(
     df: pd.DataFrame, 
-    init_params: ArrayLike
+    init_params: ArrayLike = INIT_PARAMS
 ) -> Tuple[float]:
     init_params = np.asarray([float(p) for p in init_params])
     print_err(f"Fitting with init params = {init_params}")
@@ -117,6 +118,7 @@ def fit_to_data(
         function_to_minimize, 
         x0=init_params,
         jac=jacobian,
+        method="bfgs",
     )
     print(do)
     return tuple(do.x.flatten())
@@ -368,8 +370,8 @@ with gr.Blocks() as demo:
         )
 
         (fit_button
-         .click(lambda *x: fit_to_data(data, init_params=x), inputs=param_sliders, outputs=param_sliders)
-         .then(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot)
+         .click(lambda *x: fit_to_data(data), inputs=None, outputs=param_sliders)
+         .then(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, outputs=plot)
          .then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
 
         (demo.load(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot).then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
