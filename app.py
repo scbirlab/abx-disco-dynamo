@@ -170,7 +170,7 @@ def plot_data_altair(
     encoding = dict(
         x=alt.X(year_col).scale(zero=False),
         y=alt.Y(y_col),
-        color=alt.Color('count_type').title(""),
+        color=alt.Color('count_type').title("").scale(range=colorblind_palette()),
     )
     figure = alt.Chart(df_m).mark_circle().encode(**encoding, tooltip=[year_col, y_col])
     if params is not None:
@@ -241,13 +241,13 @@ def parameter_msg(*params) -> str:
     params = np.asarray([float(p) for p in params])
     pool_size, discovery_rate, discovery_lag, half_life = params
     return f"""
-    {pool_size_title} | {pool_size:.1f} classes
+    {pool_size_title} | **{pool_size:.1f} classes**
 
-    {discovery_rate_title} | {discovery_rate:.1f} / year
+    {discovery_rate_title} | **{discovery_rate:.1f} / year**
 
-    **Discovery lag** | _time to maximal discovery rate_ | {discovery_lag:.1f} years
+    **Discovery lag** | _time to maximal discovery rate_ | **{discovery_lag:.1f} years**
 
-    {half_life_title} | {half_life:.1f} years
+    {half_life_title} | **{half_life:.1f} years**
 
     """
 
