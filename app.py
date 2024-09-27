@@ -298,32 +298,32 @@ with gr.Blocks() as demo:
 
             """
         )
+
         with gr.Row():
             param_sliders = [
                 gr.Slider(label="Pool size", info="Effective number of antibiotic classes being sampled by drug discovery", 
-                          value=20., minimum=0., maximum=100., scale=10),
+                          value=30., minimum=0., maximum=100., step=.5, scale=10),
                 gr.Slider(label="Maximal discovery rate", info="Effective number of samples from the pool per year", 
-                          value=1., minimum=0., maximum=10., scale=10),
+                          value=1., minimum=0., maximum=10., step=.1, scale=10),
                 gr.Slider(label="Discovery lag", info="Time to maximum discovery rate", 
-                          value=25., minimum=0., maximum=100., scale=10),
+                          value=25., minimum=0., maximum=100., step=.5, scale=10),
                 gr.Slider(label="Resistance-free half-life", info="Relative to start of clinical use", 
-                          value=30., minimum=0., maximum=50., scale=10),
+                          value=30., minimum=0., maximum=50., step=.2, scale=10),
             ]
             refresh_button = gr.Button("Update plot", scale=6)
             fit_button = gr.Button("Fit parameters!", scale=6)
         
-        # with gr.Row():
+        
         fit_message = gr.Markdown(parameter_msg, inputs=param_sliders)
         plot = gr.Plot(
             label="Model fit", 
             scale=4,
         )
         gr.on(
-            triggers=[s.release for s in param_sliders] + [refresh_button.click], 
+            triggers=[s.change for s in param_sliders] + [refresh_button.click], 
             fn=lambda *x: plot_data_altair(df=data, params=x),
             inputs=param_sliders,
             outputs=plot,
-            trigger_mode="once",
         )
 
     with gr.Tab("Forecasting the future!"):
@@ -365,12 +365,13 @@ with gr.Blocks() as demo:
             fn=lambda *x: plot_data_forecast_altair(df=data, params=x),
             inputs=param_and_forecast_sliders,
             outputs=forecast,
-            trigger_mode="once",
         )
 
         (fit_button
          .click(lambda *x: fit_to_data(data, init_params=x), inputs=param_sliders, outputs=param_sliders)
          .then(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot)
          .then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
+
+        (demo.load(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot).then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
 
 demo.launch(share=True)
