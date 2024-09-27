@@ -352,4 +352,4 @@ with gr.Blocks() as demo:
         forecast = gr.Plot(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, format="png", label="Forecast", scale=4)      
         refresh_button_forecast.click(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, outputs=forecast)
 
-demo.launch()
+demo.queue(default_enabled=True).launch()
