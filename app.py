@@ -2,6 +2,7 @@
 from typing import Callable, Iterable, List, Optional, Tuple
 from functools import partial
 import os
+os.environ["COMMANDLINE_ARGS"] = "--no-gradio-queue"
 
 import altair as alt
 from carabiner import print_err, colorblind_palette
