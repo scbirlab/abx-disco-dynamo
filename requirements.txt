@@ -1,4 +1,5 @@
 altair[all]
+carabiner-tools[mpl]
 gradio
 numpy
 openpyxl
