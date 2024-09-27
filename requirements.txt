@@ -1,0 +1,6 @@
+altair[all]
+gradio
+numpy
+openpyxl
+pandas
+scipy
