@@ -322,7 +322,7 @@ with gr.Blocks() as demo:
             format="png",
         )
         gr.on(
-            triggers=[s.change for s in param_sliders],# + [refresh_button.click], 
+            triggers=[s.release for s in param_sliders],# + [refresh_button.click], 
             fn=lambda *x: plot_data_altair(df=data, params=x),
             inputs=param_sliders,
             outputs=plot,
@@ -371,8 +371,11 @@ with gr.Blocks() as demo:
         (fit_button
          .click(lambda *x: fit_to_data(data), inputs=None, outputs=param_sliders)
          .then(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, outputs=plot)
-         .then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
+         .then(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_and_forecast_sliders, outputs=forecast))
 
-        (demo.load(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot).then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
+        (demo
+        .load(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, outputs=plot)
+        .then(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_and_forecast_sliders, outputs=forecast))
 
+demo.queue() 
 demo.launch(share=True)
