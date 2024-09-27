@@ -318,6 +318,7 @@ with gr.Blocks() as demo:
         plot = gr.Plot(
             label="Model fit", 
             scale=4,
+            format="png",
         )
         gr.on(
             triggers=[s.change for s in param_sliders],# + [refresh_button.click], 
@@ -357,6 +358,7 @@ with gr.Blocks() as demo:
         forecast = gr.Plot(
             label="Forecast", 
             scale=4,
+            format="png",
         )
         gr.on(
             triggers=[s.release for s in param_and_forecast_sliders],# + [refresh_button_forecast.click, refresh_button.click], 
