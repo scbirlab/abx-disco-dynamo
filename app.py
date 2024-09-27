@@ -291,7 +291,9 @@ with gr.Blocks() as demo:
             """
             # Finding the dynamic parameters
 
-            **Adjust the sliders** to see the dynamics change.
+            **Adjust the sliders** to alter the parameters underlying the rate of antibiotic discovery and resistance.
+
+            **Click update plot** to see what the dynamics would look like with your parameters.
             
             **Click "Fit parameters!"** to automatically find the best fitting parameters.
 
@@ -308,12 +310,14 @@ with gr.Blocks() as demo:
                 gr.Slider(label="Resistance-free half-life", info="Relative to start of clinical use", 
                           value=30., minimum=0., maximum=50., scale=10),
             ]
+            refresh_button = gr.Button("Update plot", scale=6)
             fit_button = gr.Button("Fit parameters!", scale=6)
         
         # with gr.Row():
         fit_message = gr.Markdown(parameter_msg, inputs=param_sliders)
         plot = gr.Plot(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, format="png", label="Model fit", scale=4)
 
+        refresh_button.click(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, outputs=plot)
         fit_button.click(lambda *x: fit_to_data(data, init_params=x), inputs=param_sliders, outputs=param_sliders)
 
     with gr.Tab("Forecasting the future!"):
@@ -321,7 +325,9 @@ with gr.Blocks() as demo:
             """
             # Forecasting future discovery and resistance!
 
-            **Adjust the sliders** to see how changes these parameters would change the future.
+            **Adjust the sliders** to see how changes in these parameters would change the future.
+
+            **Click update plot** to see what the dynamics would look like with your parameters.
 
             **Click "Fit parameters!"** on the previous tab to set the parameters to fit historical data, 
             then come back to this tab to check the forecast.
@@ -331,13 +337,19 @@ with gr.Blocks() as demo:
 
         with gr.Row():
             forecast_sliders = [
-                gr.Slider(label="⨉ pool size", info="Increase in accessible antibiotic classes", value=1., minimum=0., maximum=10., step=.2),
-                gr.Slider(label="⨉ discovery rate", info="Increase in rate of discovery", value=1., minimum=0., maximum=10., step=.2),
-                gr.Slider(label="⨉ half-life", info="Increase in resistance-free half-life", value=1., minimum=0., maximum=10., step=.2),
-                gr.Slider(label="🔮", info="In years", value=100., minimum=0., maximum=200., step=.5),
+                gr.Slider(label="⨉ pool size", info="Increase in accessible antibiotic classes", 
+                          value=1., minimum=0., maximum=10., step=.2, scale=10),
+                gr.Slider(label="⨉ discovery rate", info="Increase in rate of discovery", 
+                          value=1., minimum=0., maximum=10., step=.2, scale=10),
+                gr.Slider(label="⨉ half-life", info="Increase in resistance-free half-life", 
+                          value=1., minimum=0., maximum=10., step=.2, scale=10),
+                gr.Slider(label="🔮", info="In years", 
+                          value=100., minimum=0., maximum=200., step=.5, scale=10),
             ]
+            refresh_button_forecast = gr.Button("Update plot", scale=6)
         
         fit_message = gr.Markdown(forecast_msg, inputs=param_sliders + forecast_sliders)
         forecast = gr.Plot(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, format="png", label="Forecast", scale=4)      
+        refresh_button_forecast.click(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, outputs=forecast)
 
-demo.launch(share=True)
+demo.launch()
