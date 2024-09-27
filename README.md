@@ -11,6 +11,7 @@ pinned: false
 # Dynamics of antibiotic discovery and resistance
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/scbirlab/2024-Parkhill-BiochemJ/main?labpath=modelling-abx-discovery.ipynb)
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/scbirlab/abx-disco-dynamo)
 
 Interface to demonstrate Figure 1 from [Parkhill SL, Johnson EO, Integrating bacterial molecular genetics with chemical biology for renewed antibacterial drug discovery, _Biochemical Journal_ (2024) 481 (13): 839–864](https://doi.org/10.1042/BCJ20220062).
 
