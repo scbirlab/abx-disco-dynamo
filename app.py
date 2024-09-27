@@ -311,7 +311,6 @@ with gr.Blocks() as demo:
                 gr.Slider(label="Resistance-free half-life", info="Relative to start of clinical use", 
                           value=30., minimum=0., maximum=50., step=.2, scale=10),
             ]
-            # refresh_button = gr.Button("Update plot", scale=6)
             fit_button = gr.Button("Fit parameters!", scale=6)
         
         
@@ -323,8 +322,12 @@ with gr.Blocks() as demo:
         )
         gr.on(
             triggers=[s.release for s in param_sliders],# + [refresh_button.click], 
-            fn=lambda *x: plot_data_altair(df=data, params=x),
+            fn=parameter_msg,
             inputs=param_sliders,
+            outputs=fit_message,
+        ).then(
+            lambda *x: plot_data_altair(df=data, params=x),
+            inputs=param_sliders, 
             outputs=plot,
         )
 
@@ -352,7 +355,6 @@ with gr.Blocks() as demo:
                 gr.Slider(label="🔮", info="In years", 
                           value=100., minimum=0., maximum=200., step=.5, scale=10),
             ]
-            # refresh_button_forecast = gr.Button("Update plot", scale=6)
         
         param_and_forecast_sliders = param_sliders + forecast_sliders
         fit_message = gr.Markdown(forecast_msg, inputs=param_and_forecast_sliders)    
@@ -362,8 +364,12 @@ with gr.Blocks() as demo:
             format="png",
         )
         gr.on(
-            triggers=[s.release for s in param_and_forecast_sliders],# + [refresh_button_forecast.click, refresh_button.click], 
-            fn=lambda *x: plot_data_forecast_altair(df=data, params=x),
+            triggers=[s.release for s in param_and_forecast_sliders],
+            fn=forecast_msg,
+            inputs=param_and_forecast_sliders,
+            outputs=fit_message,
+        ).then(
+            lambda *x: plot_data_forecast_altair(df=data, params=x),
             inputs=param_and_forecast_sliders,
             outputs=forecast,
         )
