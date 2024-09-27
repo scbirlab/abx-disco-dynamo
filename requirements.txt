@@ -1,6 +1,6 @@
 altair[all]
 carabiner-tools[mpl]
-gradio
+gradio==4.44
 numpy
 openpyxl
 pandas

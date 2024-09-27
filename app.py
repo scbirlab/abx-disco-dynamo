@@ -117,7 +117,6 @@ def fit_to_data(
         function_to_minimize, 
         x0=init_params,
         jac=jacobian,
-        method='bfgs',
     )
     print(do)
     return tuple(do.x.flatten())
@@ -315,10 +314,17 @@ with gr.Blocks() as demo:
         
         # with gr.Row():
         fit_message = gr.Markdown(parameter_msg, inputs=param_sliders)
-        plot = gr.Plot(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, format="png", label="Model fit", scale=4)
-
-        refresh_button.click(lambda *x: plot_data_altair(df=data, params=x), inputs=param_sliders, outputs=plot)
-        fit_button.click(lambda *x: fit_to_data(data, init_params=x), inputs=param_sliders, outputs=param_sliders)
+        plot = gr.Plot(
+            label="Model fit", 
+            scale=4,
+        )
+        gr.on(
+            triggers=[s.release for s in param_sliders] + [refresh_button.click], 
+            fn=lambda *x: plot_data_altair(df=data, params=x),
+            inputs=param_sliders,
+            outputs=plot,
+            trigger_mode="once",
+        )
 
     with gr.Tab("Forecasting the future!"):
         gr.Markdown(
@@ -348,8 +354,23 @@ with gr.Blocks() as demo:
             ]
             refresh_button_forecast = gr.Button("Update plot", scale=6)
         
-        fit_message = gr.Markdown(forecast_msg, inputs=param_sliders + forecast_sliders)
-        forecast = gr.Plot(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, format="png", label="Forecast", scale=4)      
-        refresh_button_forecast.click(lambda *x: plot_data_forecast_altair(df=data, params=x), inputs=param_sliders + forecast_sliders, outputs=forecast)
+        param_and_forecast_sliders = param_sliders + forecast_sliders
+        fit_message = gr.Markdown(forecast_msg, inputs=param_and_forecast_sliders)    
+        forecast = gr.Plot(
+            label="Forecast", 
+            scale=4,
+        )
+        gr.on(
+            triggers=[s.release for s in param_and_forecast_sliders] + [refresh_button_forecast.click, refresh_button.click], 
+            fn=lambda *x: plot_data_forecast_altair(df=data, params=x),
+            inputs=param_and_forecast_sliders,
+            outputs=forecast,
+            trigger_mode="once",
+        )
 
-demo.queue(default_enabled=True).launch()
+        (fit_button
+         .click(lambda *x: fit_to_data(data, init_params=x), inputs=param_sliders, outputs=param_sliders)
+         .then(lambda *x: plot_data_altair(df=data, params=x),inputs=param_sliders, outputs=plot)
+         .then(lambda *x: plot_data_forecast_altair(df=data, params=x),inputs=param_and_forecast_sliders, outputs=forecast))
+
+demo.launch(share=True)
