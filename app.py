@@ -293,8 +293,6 @@ with gr.Blocks() as demo:
             # Finding the dynamic parameters
 
             **Adjust the sliders** to alter the parameters underlying the rate of antibiotic discovery and resistance.
-
-            **Click update plot** to see what the dynamics would look like with your parameters.
             
             **Click "Fit parameters!"** to automatically find the best fitting parameters.
 
@@ -312,7 +310,7 @@ with gr.Blocks() as demo:
                 gr.Slider(label="Resistance-free half-life", info="Relative to start of clinical use", 
                           value=30., minimum=0., maximum=50., step=.2, scale=10),
             ]
-            refresh_button = gr.Button("Update plot", scale=6)
+            # refresh_button = gr.Button("Update plot", scale=6)
             fit_button = gr.Button("Fit parameters!", scale=6)
         
         
@@ -322,7 +320,7 @@ with gr.Blocks() as demo:
             scale=4,
         )
         gr.on(
-            triggers=[s.change for s in param_sliders] + [refresh_button.click], 
+            triggers=[s.change for s in param_sliders],# + [refresh_button.click], 
             fn=lambda *x: plot_data_altair(df=data, params=x),
             inputs=param_sliders,
             outputs=plot,
@@ -334,8 +332,6 @@ with gr.Blocks() as demo:
             # Forecasting future discovery and resistance!
 
             **Adjust the sliders** to see how changes in these parameters would change the future.
-
-            **Click update plot** to see what the dynamics would look like with your parameters.
 
             **Click "Fit parameters!"** on the previous tab to set the parameters to fit historical data, 
             then come back to this tab to check the forecast.
@@ -354,7 +350,7 @@ with gr.Blocks() as demo:
                 gr.Slider(label="🔮", info="In years", 
                           value=100., minimum=0., maximum=200., step=.5, scale=10),
             ]
-            refresh_button_forecast = gr.Button("Update plot", scale=6)
+            # refresh_button_forecast = gr.Button("Update plot", scale=6)
         
         param_and_forecast_sliders = param_sliders + forecast_sliders
         fit_message = gr.Markdown(forecast_msg, inputs=param_and_forecast_sliders)    
@@ -363,7 +359,7 @@ with gr.Blocks() as demo:
             scale=4,
         )
         gr.on(
-            triggers=[s.release for s in param_and_forecast_sliders] + [refresh_button_forecast.click, refresh_button.click], 
+            triggers=[s.release for s in param_and_forecast_sliders],# + [refresh_button_forecast.click, refresh_button.click], 
             fn=lambda *x: plot_data_forecast_altair(df=data, params=x),
             inputs=param_and_forecast_sliders,
             outputs=forecast,
